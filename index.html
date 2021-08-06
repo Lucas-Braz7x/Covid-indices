@@ -111,7 +111,17 @@
       console.log("PAM! Erro 404!!!!!!!!!!!!!");
     }
   }
+  
+  function showConfirmed(confirmed, inputValue = '', totalConfirmed){
+    if(inputValue == '' || inputValue == 'Global'){
+      document.querySelector('.indice-confirmed').innerHTML = `<p>${confirmed.Global.TotalConfirmed}</p>`;  
+    }else{
+      console.log('Entrou no else');
+      document.querySelector('.indice-confirmed').innerHTML = `<p>${totalConfirmed}</p>`;
+    } 
+  }
 
+  
 
   getContent();
 </script>
