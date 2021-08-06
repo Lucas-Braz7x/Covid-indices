@@ -121,7 +121,16 @@
     } 
   }
 
-  
+  function showRecovered(recovered, inputValue = '', totalRecovered){
+
+    if(inputValue == '' || inputValue == 'Global'){
+      document.querySelector('.indice-recovered').innerHTML = `<p>${recovered.Global.TotalRecovered}</p>`;  
+    }else{
+      console.log('Entrou no Recovery');
+      document.querySelector('.indice-recovered').innerHTML = `<p>${totalRecovered}</p>`;
+    }
+  }
+
 
   getContent();
 </script>
