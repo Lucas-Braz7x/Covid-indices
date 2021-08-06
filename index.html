@@ -10,9 +10,9 @@
 <body>
   <main class="container">
     <div class="input-search">
-      <select id="input" name="input" class="input-text">
+      <select onchange="getContent()" id="input" name="input" class="input-text">
       </select>
-      <input type="date" class="input-date">
+      <input type="date" class="input-date" id="input-date" >
     </div>
     <div class="indice-wrapper">
       <div class="indice">
@@ -31,7 +31,7 @@
         <div class="indicadores"></div>
       </div>
       <div class="indice">
-        <h1 class="indice-title">Ativos</h1>
+        <h1 class="indice-title active">Ativos</h1>
         <p class="indice-active"></p>
         <div class="indicadores"></div>
       </div>
@@ -58,117 +58,60 @@
   getCountries();*/
 
   async function getContent(){
-    let country = document.getElementById('input').value;
-    console.log(country);
+    //let country = document.getElementById('input').value;
+
+    let select = document.getElementById('input');
 
     try{
-      if(country == '' || country == null || country == undefined){
+      if(select.value == '' || select.value == null || select.value == undefined || select.value == 'Global'){
         const response = await fetch(`https://api.covid19api.com/summary`);//Pegando a Api
         console.log('entrou aqui');
         const data = await response.json(); //Transformando em json
-        console.log(data.Global.TotalConfirmed);
-        console.log(data.Countries[1].Country);
+        /* console.log(data.Global.TotalConfirmed);
+        console.log(data.Countries[1].Country); */
         showConfirmed(data);
 
-        let select = document.getElementById('input');
+        /* let select = document.getElementById('input'); */
         
         select.innerHTML += (`<option>Global</option>` );
 
         data.Countries.forEach( dataCountries =>{
-          console.log(dataCountries.Country);
+          /* console.log(dataCountries.Country); */
           select.innerHTML += (`<option>${dataCountries.Country}</option>` );
         } )
         showRecovered(data);
         showDeaths(data);
         showActive(data);
+      }else{
+        let dataAtual = new Date;
+        let country = select.value;
+        let countConfirmed = 0;
+        let countRecovered = 0;
+        let countActive = 0;
+        let countDeaths = 0;
+
+        const response = await fetch(`https://api.covid19api.com/country/${country}?from=2019-12-01T00:00:00Z&to=${dataAtual.getFullYear()}-0${(dataAtual.getMonth()+1)}-0${dataAtual.getDate()}T00:00:00Z`);//Pegando a Api
+        data = await response.json(); 
+        
+        console.log(data); 
+        console.log(country);
+    
+        data.forEach(item =>{
+          countConfirmed += (item.Confirmed - countConfirmed) >= 0 ? item.Confirmed - countConfirmed : 0;
+          countRecovered += (item.Recovered - countRecovered) >= 0 ? item.Recovered - countRecovered : 0;
+          countActive += (item.Active - countActive) >= 0 ? item.Active - countActive : 0;
+          countDeaths += (item.Deaths - countDeaths) >= 0 ? item.Deaths - countDeaths : 0;
+        });
+        showConfirmed(data, country,countConfirmed);
+        showRecovered(data, country, countRecovered);
+        showActive(data, country, countActive);      
+        showDeaths(data, country, countDeaths);
       }
-      
-      //const data = await response.json(); //Transformando em json
-      
-      //Chamando a função criada
-      // showConfirmed(data);
-
     }catch(e){
       console.log("PAM! Erro 404!!!!!!!!!!!!!");
     }
-
-   /*  try{
-      const response = await fetch('http://localhost:3010/');//Pegando a Api
-      const data = await response.json(); //Transformando em json
-      console.log(data[0].Province);
-      
-      //Chamando a função criada
-      showConfirmed(data);
-
-    }catch(e){
-      console.log("PAM! Erro 404!!!!!!!!!!!!!");
-    } */
   }
 
-  function showConfirmed(confirmed, inputValue = ''){
-    let output = '';
-    let cont = 0;
-
-    if(inputValue == ''){
-      document.querySelector('.indice-confirmed').innerHTML = `<p>${confirmed.Global.TotalConfirmed}</p>`;  
-    }else{
-      console.log('Entrou no else');
-      confirmed.forEach(element => {
-        cont += parseInt(element.Confirmed);
-      });
-
-      console.log(cont);
-      document.querySelector('.indice-confirmed').innerHTML = `<p>${cont}</p>`;
-    }
-  }
-  function showRecovered(recovered, inputValue = ''){
-    let output = '';
-    let cont = 0;
-
-    if(inputValue == ''){
-      document.querySelector('.indice-recovered').innerHTML = `<p>${recovered.Global.TotalRecovered}</p>`;  
-    }else{
-      
-      confirmed.forEach(element => {
-        cont += parseInt(element.Confirmed);
-      });
-
-      console.log(cont);
-      document.querySelector('.indice-confirmed').innerHTML = `<p>${cont}</p>`;
-    }
-  }
-  function showDeaths(deaths, inputValue = ''){
-    let output = '';
-    let cont = 0;
-
-    if(inputValue == ''){
-      document.querySelector('.indice-death').innerHTML = `<p>${deaths.Global.TotalDeaths}</p>`;  
-    }else{
-      
-      confirmed.forEach(element => {
-        cont += parseInt(element.Confirmed);
-      });
-
-      console.log(cont);
-      document.querySelector('.indice-confirmed').innerHTML = `<p>${cont}</p>`;
-    }
-  }
-  function showActive(active, inputValue = ''){
-    let output = '';
-    let cont = 0;
-
-    if(inputValue == ''){
-      document.querySelector('.indice-active').innerHTML = `<p>${active.Global.NewConfirmed}</p>`;  
-    }else{
-      
-      confirmed.forEach(element => {
-        cont += parseInt(element.Confirmed);
-      });
-
-      console.log(cont);
-      document.querySelector('.indice-confirmed').innerHTML = `<p>${cont}</p>`;
-    }
-  }
 
   getContent();
 </script>
