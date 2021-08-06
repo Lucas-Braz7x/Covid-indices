@@ -139,7 +139,21 @@
       document.querySelector('.indice-death').innerHTML = `<p>${totalDeaths}</p>`;
     }
   }
-  
+  function showActive(active, inputValue = '', totalActives){
+    let output = '';
+    let cont = 0;
+
+    if(inputValue == ''){
+      document.querySelector('.active').innerHTML = `<p>Novos casos</p>`;  
+      document.querySelector('.indice-active').innerHTML = `<p>${active.Global.NewConfirmed}</p>`;  
+    }else{
+      document.querySelector('.active').innerHTML = ``;  
+      document.querySelector('.active').innerHTML = `<p>Ativos</p>`;  
+
+      console.log('Entrou no Active');
+      document.querySelector('.indice-active').innerHTML = `<p>${totalActives}</p>`;
+    }
+  }
 
   getContent();
 </script>
