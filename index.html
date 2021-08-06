@@ -131,6 +131,15 @@
     }
   }
 
+  function showDeaths(deaths, inputValue = '', totalDeaths){
+    if(inputValue == ''){
+      document.querySelector('.indice-death').innerHTML = `<p>${deaths.Global.TotalDeaths}</p>`;  
+    }else{
+      console.log('Entrou no Deaths');
+      document.querySelector('.indice-death').innerHTML = `<p>${totalDeaths}</p>`;
+    }
+  }
+  
 
   getContent();
 </script>
